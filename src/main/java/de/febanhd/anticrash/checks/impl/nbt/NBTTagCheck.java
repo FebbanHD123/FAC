@@ -42,7 +42,7 @@ public class NBTTagCheck extends AbstractCheck {
                     CheckResult result = check.isValid(nbtTagCompound);
                     if(!result.check()) {
                         player.getInventory().clear();
-                        this.sendCrashWarning(player, event, "Invalid NBT-Tag: " + result.getReason() + "!");
+                        this.sendInvalidPacketWarning(player, event, "Invalid NBT-Tag: " + result.getReason() + "!");
                         event.setCancelled(true);
                     }
                 }
