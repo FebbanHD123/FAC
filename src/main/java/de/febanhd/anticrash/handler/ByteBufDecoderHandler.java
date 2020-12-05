@@ -47,8 +47,7 @@ public class ByteBufDecoderHandler extends ByteToMessageDecoder {
     }
 
     public void sendCrashWarning(Player player, String reason) {
-        if(!((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.isOpen())
-            ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.close();
+        ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.close();
         if(this.lastWarningSended + 1500 > System.currentTimeMillis()) return;
         this.lastWarningSended = System.currentTimeMillis();
         String playerName;
