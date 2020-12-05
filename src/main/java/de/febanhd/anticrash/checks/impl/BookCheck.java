@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import de.febanhd.anticrash.checks.AbstractCheck;
 import de.febanhd.anticrash.checks.CheckResult;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.utils.ExploitCheckUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -15,10 +16,10 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-public class CustomPayloadCheck extends AbstractCheck {
+public class BookCheck extends AbstractCheck {
 
-    public CustomPayloadCheck() {
-        super("CustomPayloadCheck", PacketType.Play.Client.CUSTOM_PAYLOAD, PacketType.Play.Client.BLOCK_PLACE);
+    public BookCheck() {
+        super("BookCheck", PacketType.Play.Client.CUSTOM_PAYLOAD, PacketType.Play.Client.BLOCK_PLACE);
     }
 
     @Override
@@ -41,6 +42,11 @@ public class CustomPayloadCheck extends AbstractCheck {
             }
 
             if (channel.equals("MC|BSign") || channel.equals("MC|BEdit") || channel.equals("MC|BOpen")) {
+
+                if(ConfigCache.getInstance().getValue("bookcheck.disableBooks", false, Boolean.class)) {
+                    event.setCancelled(true);
+                    return;
+                }
 
                 if (!player.getItemInHand().getType().toString().contains("BOOK")) {
                     this.sendInvalidPacketWarning(player, event, "Player send a book packet without holding a book in his hand.");
@@ -102,6 +108,10 @@ public class CustomPayloadCheck extends AbstractCheck {
             org.bukkit.inventory.ItemStack bukkitStack = packet.getItemModifier().readSafely(0);
             ItemStack stack = CraftItemStack.asNMSCopy(bukkitStack);
             if(bukkitStack.getType().toString().contains("BOOK")) {
+                if(ConfigCache.getInstance().getValue("bookcheck.disableBooks", false, Boolean.class)) {
+                    event.setCancelled(true);
+                    return;
+                }
                 CheckResult result = ExploitCheckUtils.isInvalidBookTag(stack.getTag());
                 if(result.check()) {
                     this.sendCrashWarning(player, event, "Open book with invalid tag: " + result.getReason());

@@ -1,7 +1,7 @@
 package de.febanhd.anticrash.handler;
 
 import de.febanhd.anticrash.AntiCrash;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +26,7 @@ public class ByteBufDecoderHandler extends ByteToMessageDecoder {
 
         if(!player.isOnline()) return;
 
-        int maxCapacity = ConfigCach.getInstance().getValue("decode.maxCapacity", 16500, Integer.class);
+        int maxCapacity = ConfigCache.getInstance().getValue("decode.maxCapacity", 16500, Integer.class);
 
         if(byteBuf.capacity() < 0) {
             this.sendCrashWarning(player, "Too low packet capacity! (< 0)");

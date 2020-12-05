@@ -1,7 +1,7 @@
 package de.febanhd.anticrash.checks.impl;
 
 import de.febanhd.anticrash.checks.AbstractCheck;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class SignCheck extends AbstractCheck implements Listener {
     @EventHandler
     public void onSignUpdate(SignChangeEvent event) {
         boolean badSign = false;
-        int maxLength = ConfigCach.getInstance().getValue("signcheck.maxLength", 50, Integer.class);
+        int maxLength = ConfigCache.getInstance().getValue("signcheck.maxLength", 50, Integer.class);
         for(String line : event.getLines()) {
             int lineLength = line.length();
             if(lineLength > maxLength) {

@@ -1,7 +1,6 @@
 package de.febanhd.anticrash.checks.impl.nbt;
 
 import de.febanhd.anticrash.checks.CheckResult;
-import de.febanhd.anticrash.config.ConfigCach;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import de.febanhd.anticrash.utils.ExploitCheckUtils;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;

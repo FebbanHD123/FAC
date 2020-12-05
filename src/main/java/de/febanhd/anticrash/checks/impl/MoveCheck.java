@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.checks.AbstractCheck;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.player.FACPlayer;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import org.bukkit.Bukkit;
@@ -46,7 +46,7 @@ public class MoveCheck extends AbstractCheck implements Listener {
     @Override
     public void onPacketReceiving(PacketEvent event) {
         if(!this.isOnline(event.getPlayer())) return;
-        if(AntiCrash.getInstance().getTpsCalculator().getCurrentTps() < ConfigCach.getInstance().getValue("movecheck.maxTps", 15, Integer.class)) return;
+        if(AntiCrash.getInstance().getTpsCalculator().getCurrentTps() < ConfigCache.getInstance().getValue("movecheck.maxTps", 15, Integer.class)) return;
         FACPlayer facPlayer = AntiCrash.getInstance().getPlayerCash().getPlayer(event.getPlayer().getUniqueId());
         if(facPlayer == null || facPlayer.getJoinedAt() + 2500 > System.currentTimeMillis()) return; //check if hes joining
         if(!this.playerLocationsLastTick.containsKey(event.getPlayer().getUniqueId())) return;
@@ -63,7 +63,7 @@ public class MoveCheck extends AbstractCheck implements Listener {
         Location lastLocation = lastMove.location;
         double distance = lastLocation.distance(location);
 
-        if(distance < ConfigCach.getInstance().getValue("movecheck.maxDistance", 75, Integer.class)) return;
+        if(distance < ConfigCache.getInstance().getValue("movecheck.maxDistance", 75, Integer.class)) return;
 
         if(this.teleports.contains(player.getUniqueId())) {
             this.teleports.remove(player.getUniqueId());
@@ -85,7 +85,7 @@ public class MoveCheck extends AbstractCheck implements Listener {
             this.teleports.remove(uuid);
             return;
         }
-        if (distance >= ConfigCach.getInstance().getValue("movecheck.maxDistance", 75, Integer.class)) {
+        if (distance >= ConfigCache.getInstance().getValue("movecheck.maxDistance", 75, Integer.class)) {
             event.setCancelled(true);
             if (this.flags.containsKey(player.getUniqueId())) {
                 this.flags.put(player.getUniqueId(), this.flags.get(player.getUniqueId()) + 1);
@@ -93,7 +93,7 @@ public class MoveCheck extends AbstractCheck implements Listener {
                 this.flags.put(player.getUniqueId(), 1);
             }
         }
-        if (this.flags.containsKey(player.getUniqueId()) && this.flags.get(player.getUniqueId()) > ConfigCach.getInstance().getValue("movecheck.max_flags", 5, Integer.class)) {
+        if (this.flags.containsKey(player.getUniqueId()) && this.flags.get(player.getUniqueId()) > ConfigCache.getInstance().getValue("movecheck.max_flags", 5, Integer.class)) {
             this.sendCrashWarning(player, event, "Moved too often too fast.");
             this.flags.remove(player.getUniqueId());
 

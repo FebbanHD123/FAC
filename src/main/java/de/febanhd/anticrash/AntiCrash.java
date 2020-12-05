@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import de.febanhd.anticrash.checks.ICheck;
 import de.febanhd.anticrash.checks.impl.*;
 import de.febanhd.anticrash.checks.impl.nbt.NBTTagCheck;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.player.PlayerCash;
 import de.febanhd.anticrash.utils.TPSCalculator;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public class AntiCrash {
 
     private AntiCrash(Plugin plugin) {
         instance = this;
-        new ConfigCach();
+        new ConfigCache();
 
         this.plugin = plugin;
         this.tpsCalculator = new TPSCalculator();
@@ -50,7 +50,7 @@ public class AntiCrash {
     private void registerChecks() {
         this.plugin.getLogger().info("Register Checks");
 
-        this.checks.add(new CustomPayloadCheck());
+        this.checks.add(new BookCheck());
         this.checks.add(new WindowClickCheck());
         this.checks.add(new BlockPlaceCheck());
         this.checks.add(new MoveCheck());

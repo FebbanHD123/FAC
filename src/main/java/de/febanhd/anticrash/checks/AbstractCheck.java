@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.google.common.collect.Maps;
 import de.febanhd.anticrash.AntiCrash;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.player.FACPlayer;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import io.netty.channel.Channel;
@@ -47,7 +47,7 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
     }
 
     public boolean isEnable() {
-        return ConfigCach.getInstance().isCheckEnable(this.name);
+        return ConfigCache.getInstance().isCheckEnable(this.name);
     }
 
     public void sendCrashWarning(Player player, PacketEvent event, String reason) {

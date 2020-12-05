@@ -8,15 +8,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
-public class ConfigCach {
+public class ConfigCache {
 
     @Getter
-    private static ConfigCach instance;
+    private static ConfigCache instance;
 
     private FileConfiguration cfg;
     private HashMap<String, Object> values = Maps.newHashMap();
 
-    public ConfigCach() {
+    public ConfigCache() {
         instance = this;
         JavaPlugin plugin = AntiCrashPlugin.getPlugin();
         plugin.getConfig().options().copyDefaults(true);

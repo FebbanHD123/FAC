@@ -21,6 +21,9 @@ decode:
 
 bookcheck:
 
+  #If this is on then all packets are blocked with books
+  disableBooks: false
+
   #the limit of chars per page (default: 300)
   page_chars: 300
 

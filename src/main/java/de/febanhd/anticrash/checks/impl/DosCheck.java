@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.checks.AbstractCheck;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.nettyinjections.MCChannelInjection;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import io.netty.buffer.ByteBuf;
@@ -40,10 +40,10 @@ public class DosCheck extends AbstractCheck {
     private int cpsToUnlock;
 
     private int connectionPerSecond = 0;
-    private int cpsLimit = ConfigCach.getInstance().getValue("doscheck.cpsLimit", 130, Integer.class);
-    private long blockTime = ConfigCach.getInstance().getValue("doscheck.blocktime", 300000, Integer.class);
+    private int cpsLimit = ConfigCache.getInstance().getValue("doscheck.cpsLimit", 130, Integer.class);
+    private long blockTime = ConfigCache.getInstance().getValue("doscheck.blocktime", 300000, Integer.class);
 
-    private boolean debug = ConfigCach.getInstance().getValue("debugMode", false, Boolean.class);
+    private boolean debug = ConfigCache.getInstance().getValue("debugMode", false, Boolean.class);
     public long blockedConnections = 0;
 
     private String debugActionbarLayout, attackActionbarLayout;
@@ -96,12 +96,12 @@ public class DosCheck extends AbstractCheck {
             String defaultDebugActionBarLayout = "&fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-IPs &c%ips%";
             String defaultActionBarLayout = "&cAttack &f| &fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%";
             this.debugActionbarLayout = ChatColor.translateAlternateColorCodes('&',
-                    ConfigCach.getInstance().getValue("doscheck.actionbarlayout.debug", defaultDebugActionBarLayout, String.class)
+                    ConfigCache.getInstance().getValue("doscheck.actionbarlayout.debug", defaultDebugActionBarLayout, String.class)
                     .replaceAll("%cps%", String.valueOf(this.connectionPerSecond))
                     .replaceAll("%blocked%", String.valueOf(this.blockedConnections))
                     .replaceAll("%ips%", String.valueOf(this.blockedIPs.size())));
             this.attackActionbarLayout = ChatColor.translateAlternateColorCodes('&',
-                    ConfigCach.getInstance().getValue("doscheck.actionbarlayout.attack", defaultActionBarLayout, String.class)
+                    ConfigCache.getInstance().getValue("doscheck.actionbarlayout.attack", defaultActionBarLayout, String.class)
                     .replaceAll("%cps%", String.valueOf(this.connectionPerSecond))
                     .replaceAll("%blocked%", String.valueOf(this.blockedConnections))
                     .replaceAll("%ips%", String.valueOf(this.blockedIPs.size())));
@@ -144,9 +144,9 @@ public class DosCheck extends AbstractCheck {
             return false;
         }
 
-        if (!this.blockedIPs.containsKey(host) && this.getConnections(host, 1000).size() > ConfigCach.getInstance().getValue("doscheck.cps_limit_ip", 20, Integer.class)) {
+        if (!this.blockedIPs.containsKey(host) && this.getConnections(host, 1000).size() > ConfigCache.getInstance().getValue("doscheck.cps_limit_ip", 20, Integer.class)) {
             this.blockedIPs.put(host, System.currentTimeMillis());
-            this.enableAttackMode(ConfigCach.getInstance().getValue("doscheck.cps_limit_ip", 20, Integer.class));
+            this.enableAttackMode(ConfigCache.getInstance().getValue("doscheck.cps_limit_ip", 20, Integer.class));
             return false;
         }
         return true;
@@ -169,8 +169,8 @@ public class DosCheck extends AbstractCheck {
             if (o instanceof UnpooledUnsafeDirectByteBuf) {
                 ByteBuf byteBuf = Unpooled.wrappedBuffer((UnpooledUnsafeDirectByteBuf) o);
                 int capacity = byteBuf.capacity();
-                if (capacity > ConfigCach.getInstance().getValue("doscheck.maxDataCapacity", 1000, Integer.class)) {
-                    this.blockIP(host, "Too big datas (> " + ConfigCach.getInstance().getValue("doscheck.maxDataCapacity", 1000, Integer.class) + ")");
+                if (capacity > ConfigCache.getInstance().getValue("doscheck.maxDataCapacity", 1000, Integer.class)) {
+                    this.blockIP(host, "Too big datas (> " + ConfigCache.getInstance().getValue("doscheck.maxDataCapacity", 1000, Integer.class) + ")");
                     return false;
                 }
             }

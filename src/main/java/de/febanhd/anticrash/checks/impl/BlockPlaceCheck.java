@@ -5,7 +5,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.checks.AbstractCheck;
-import de.febanhd.anticrash.config.ConfigCach;
+import de.febanhd.anticrash.config.ConfigCache;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,9 +39,9 @@ public class BlockPlaceCheck extends AbstractCheck {
 
         double dinstance = location.distance(player.getLocation());
 
-        double maxDistance = ConfigCach.getInstance().getValue("placecheck.maxDistance", 32, Integer.class);
+        double maxDistance = ConfigCache.getInstance().getValue("placecheck.maxDistance", 32, Integer.class);
 
-        if(dinstance > maxDistance && AntiCrash.getInstance().getTpsCalculator().getCurrentTps() > ConfigCach.getInstance().getValue("placecheck.maxTps", 15, Integer.class)) {
+        if(dinstance > maxDistance && AntiCrash.getInstance().getTpsCalculator().getCurrentTps() > ConfigCache.getInstance().getValue("placecheck.maxTps", 15, Integer.class)) {
             this.sendCrashWarning(player, event, "The location of the placed block is too far away (> " + maxDistance + ")");
             return;
         }
