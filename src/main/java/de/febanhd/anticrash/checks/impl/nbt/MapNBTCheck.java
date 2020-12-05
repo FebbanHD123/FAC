@@ -35,16 +35,15 @@ public class MapNBTCheck implements INBTCheck, Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
-        if(event.getPlayer().getItemInHand().getType() == Material.EMPTY_MAP) {
-            ItemStack itemstack = event.getPlayer().getItemInHand();
-            net.minecraft.server.v1_8_R3.ItemStack item = CraftItemStack.asNMSCopy(itemstack);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(AntiCrashPlugin.getPlugin(), () -> {
-                if(itemstack.getType() == Material.MAP) {
-                    if(item.getTag().getInt("range") < 0||item.getTag().getInt("range") > ConfigCach.getInstance().getValue("nbcheck.map.maxRange", 15, Integer.class)) {
-                        itemstack.setType(Material.AIR);
-                    }
+        ItemStack itemInHand = event.getItem();
+        if (itemInHand == null || !itemInHand.getType().equals(Material.EMPTY_MAP)) return;
+        net.minecraft.server.v1_8_R3.ItemStack item = CraftItemStack.asNMSCopy(itemInHand);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(AntiCrashPlugin.getPlugin(), () -> {
+            if (itemInHand.getType() == Material.MAP) {
+                if (!ExploitCheckUtils.isValidMap(item.getTag()).check()) {
+                    itemInHand.setType(Material.AIR);
                 }
-            }, 20);
-        }
+            }
+        }, 20);
     }
 }
