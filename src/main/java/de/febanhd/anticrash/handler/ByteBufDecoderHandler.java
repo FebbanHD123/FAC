@@ -15,6 +15,7 @@ import java.util.List;
 public class ByteBufDecoderHandler extends ByteToMessageDecoder {
 
     private final Player player;
+    private long lastWarningSended = 0;
 
     public ByteBufDecoderHandler(Player player) {
         this.player = player;
@@ -46,7 +47,10 @@ public class ByteBufDecoderHandler extends ByteToMessageDecoder {
     }
 
     public void sendCrashWarning(Player player, String reason) {
-        ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.close();
+        if(!((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.isOpen())
+            ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.close();
+        if(this.lastWarningSended + 1500 > System.currentTimeMillis()) return;
+        this.lastWarningSended = System.currentTimeMillis();
         String playerName;
         if(player != null && player.getName() != null) {
             playerName = player.getName();

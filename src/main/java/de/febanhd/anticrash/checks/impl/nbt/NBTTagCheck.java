@@ -23,6 +23,8 @@ public class NBTTagCheck extends AbstractCheck {
 
         this.checks.add(new MobSpawnerNBTCheck());
         this.checks.add(new FurnaceNBTCheck());
+        this.checks.add(new SkullNBTCheck());
+        this.checks.add(new MapNBTCheck());
     }
 
     @Override

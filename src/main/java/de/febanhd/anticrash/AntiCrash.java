@@ -58,7 +58,7 @@ public class AntiCrash {
         this.checks.add(new InstantCrasherCheck());
         this.checks.add(new DosCheck());
         this.checks.add(new SignCheck());
-        this.checks.add(new PacketSpamCheck());
+        this.checks.add(new EnderPortalCheck());
 
     }
 

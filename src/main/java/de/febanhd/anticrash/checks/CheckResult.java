@@ -23,12 +23,19 @@ public class CheckResult {
         public Positive(String reason) {
             super(true, reason);
         }
+
+        public Positive() {
+            super(true, "");
+        }
     }
 
     public static final class Negative extends CheckResult {
 
         public Negative(String reason) {
             super(false, reason);
+        }
+        public Negative() {
+            super(false, "");
         }
     }
 }

@@ -1,0 +1,90 @@
+#FAC by FebanHD | Only for Friends
+
+debugMode: false 
+
+#---------------------------------------------- MODULES -----------------------------------------------
+
+#Enable (true) or Disable (false) checks
+checks:
+  DosCheck: true
+
+#---------------------------------------------- DATA -----------------------------------------------
+
+#Set the java library path for the class transformers. Its the jre location/bin.
+java.library.path: JAVAHOME/bin
+
+#All settings for the decoding of a packet. Its the first Check
+decode:
+
+  #The max bytebuf/packet size (default: 16500)
+  maxCapacity: 16500
+
+bookcheck:
+
+  #the limit of chars per page (default: 300)
+  page_chars: 300
+
+  #The limit of pages per book (default legacy(< 1.13): 50, newer Versions: 100)
+  page_limit: 50
+
+  #The limit of bytes per page. (default: 750)
+  page_byte_limit: 750
+
+  #The limit of bytes for a book. (default: 38000)
+  byte_limit: 38000
+
+
+#This check detects: Nullping, Authsmasher etc...
+doscheck:
+
+  #CPS: Connections Per Second
+  #The limit of cps until the server goes into attack mode (default: 30)
+  cpsLimit: 130
+
+  #The time an IP is blocked in millis (default: 300000, 5 minutes)
+  blocktime: 300000
+
+  #The limit of cps of an ip until the server blocked it (default: 20)
+  cps_limit_ip: 20
+
+  #The limit of the capacity from the data (default: 700)
+  maxDataCapacity: 700
+
+  #The action which is sending to players when attack
+  #Placeholders: %cps%: Connections per second, %ping%: The ping of the player, %blocked% The amount of blocked-connections, %ips%: The amount of blocked-ips
+  actionbarlayout:
+    attack: '&cAttack &f| &fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%'
+    debug: '&fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-IPs &c%ips%'
+
+placecheck:
+
+  #The maximum distance between the player and the block to be placed (default: 32, 2 chunks).
+  maxDistance: 32.0
+
+  #If the tps is under that value. The distance check is disabled until the tps is height.
+  maxTps: 15
+
+movecheck:
+
+  #The limit of blocks the player can move per tick (default: 75)
+  maxDistance: 75
+
+  #How often may the player run too fast until he is kicked (default: 5)
+  max_flags: 6
+  
+  #If the tps is under that value. The check is disabled until the tps is height. 
+  maxTps: 15
+
+nbtcheck:
+  spawner:
+    maxSpawnRange: 20
+    maxSpawnDelay: 1000
+    maxSpawnCount: 30
+    maxRequiredPlayerRange: 16
+  map:
+    maxRange: 15
+
+signcheck:
+   
+   #The maximum length of a line from a sign
+   maxLength: 50

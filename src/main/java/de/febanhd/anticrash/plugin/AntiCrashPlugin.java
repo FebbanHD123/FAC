@@ -23,7 +23,7 @@ public class AntiCrashPlugin extends JavaPlugin {
         }
 
         this.getCommand("unblockips").setExecutor(new UnblockIPsCommand());
-        this.getCommand("de/febanhd/anticrash").setExecutor(new AntiCrashCommand());
+        this.getCommand("anticrash").setExecutor(new AntiCrashCommand());
         Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
         AntiCrash.init(this);
 

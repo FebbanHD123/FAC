@@ -10,6 +10,7 @@ import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.config.ConfigCach;
 import de.febanhd.anticrash.player.FACPlayer;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
+import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
@@ -108,8 +109,12 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
     }
 
     public void closeChannel(Player player) {
-        if(player instanceof CraftPlayer)
-            ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.close();
+        if(player instanceof CraftPlayer) {
+            Channel channel = ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel;
+            if(channel.isOpen()) {
+                channel.close();
+            }
+        }
     }
 
     public void safeKick(Player player, String reason) {

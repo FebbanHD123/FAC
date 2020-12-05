@@ -1,31 +1,35 @@
 package de.febanhd.anticrash.checks.impl;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.febanhd.anticrash.checks.AbstractCheck;
 import de.febanhd.anticrash.config.ConfigCach;
-import org.bukkit.entity.Player;
+import de.febanhd.anticrash.plugin.AntiCrashPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
 
-public class SignCheck extends AbstractCheck {
+public class SignCheck extends AbstractCheck implements Listener {
     public SignCheck() {
-        super("SignCheck", PacketType.Play.Client.UPDATE_SIGN);
+        super("SignCheck");
+        if(this.isEnable())
+            Bukkit.getPluginManager().registerEvents(this, AntiCrashPlugin.getPlugin());
     }
 
-    @Override
-    public void onPacketReceiving(PacketEvent event) {
-        PacketContainer packet = event.getPacket();
-        Player player = event.getPlayer();
-        WrappedChatComponent[] lines = packet.getChatComponentArrays().readSafely(0);
-        for(int i = 0; i < lines.length; i++) {
-            WrappedChatComponent chatComponent = lines[i];
-            int length = chatComponent.getJson().length() - 2;
-            int maxLength = ConfigCach.getInstance().getValue("signcheck.maxLength", 35, Integer.class);
-            if(length > maxLength) {
-                this.sendCrashWarning(player, event, "Line " + (i + 1) + " is too long (> " + maxLength + ")");
-                return;
+    @EventHandler
+    public void onSignUpdate(SignChangeEvent event) {
+        boolean badSign = false;
+        int maxLength = ConfigCach.getInstance().getValue("signcheck.maxLength", 50, Integer.class);
+        for(String line : event.getLines()) {
+            int lineLength = line.length();
+            if(lineLength > maxLength) {
+                badSign = true;
+                break;
             }
         }
+        if(badSign) {
+            this.sendCrashWarning(event.getPlayer(), "Placed a sign with too many characters (> " + maxLength + ")");
+            event.setCancelled(true);
+        }
     }
+
 }

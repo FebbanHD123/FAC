@@ -1,0 +1,14 @@
+name: FAC
+version: ${project.version}
+main: de.febanhd.anticrash.plugin.AntiCrashPlugin
+author: FebanHD
+softdepend:
+  - ProtocolLib
+
+commands:
+  unblockips:
+  anticrash:
+    aliases:
+      - ac
+      - fac
+      - facanticrash
