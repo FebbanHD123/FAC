@@ -26,6 +26,7 @@ public class WindowClickCheck extends AbstractCheck {
                 event.setCancelled(true);
                 return;
             }
+
             ItemStack stack = CraftItemStack.asNMSCopy(bukkitStack);
 
             CheckResult result = ExploitCheckUtils.isInvalidBookTag(stack.getTag());

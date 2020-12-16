@@ -6,6 +6,7 @@ import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -22,11 +23,30 @@ public class ByteBufDecoderHandler extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> list) throws Exception {
 
-        if(!player.isOnline()) return;
+        if(!player.isOnline()) {
+            this.sendCrashWarning(player, "Player is offline");
+            return;
+        }
 
+        Packet<?> packet = null;
+        if (byteBuf.readableBytes() != 0) {
+            PacketDataSerializer packetDataSerializer = new PacketDataSerializer(byteBuf.copy()); //Copy bytebuf
+            int packetID = packetDataSerializer.e();
+            packet = ctx.channel().attr(NetworkManager.c).get().a(EnumProtocolDirection.SERVERBOUND, packetID); //get packet by packet id
+        }
         int maxCapacity = ConfigCache.getInstance().getValue("decode.maxCapacity", 16500, Integer.class);
+
+        if(packet != null) {
+            String customCapacityConfigPath = "decode.customCapacity." + packet.getClass().getSimpleName();
+            if (ConfigCache.getInstance().contains(customCapacityConfigPath)) {
+                Object customCapacity = ConfigCache.getInstance().getValue(customCapacityConfigPath);
+                if (customCapacity instanceof Integer) {
+                    maxCapacity = (Integer) customCapacity;
+                }
+            }
+        }
 
         if(byteBuf.capacity() < 0) {
             this.sendCrashWarning(player, "Too low packet capacity! (< 0)");

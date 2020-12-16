@@ -19,6 +19,9 @@ decode:
   #The max bytebuf/packet size (default: 16500)
   maxCapacity: 16500
 
+  customCapacity:
+    PacketPlayInCustomPayload: 32800
+
 bookcheck:
 
   #If this is on then all packets are blocked with books

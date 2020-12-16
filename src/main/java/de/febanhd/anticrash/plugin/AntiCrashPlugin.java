@@ -5,8 +5,12 @@ import de.febanhd.anticrash.checks.impl.DosCheck;
 import de.febanhd.anticrash.commands.AntiCrashCommand;
 import de.febanhd.anticrash.commands.UnblockIPsCommand;
 import de.febanhd.anticrash.listener.PlayerConnectionListener;
+import de.febanhd.anticrash.updatechecker.UpdateChecker;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.concurrent.Executors;
 
 public class AntiCrashPlugin extends JavaPlugin {
 
@@ -21,6 +25,14 @@ public class AntiCrashPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        Metrics metrics = new Metrics(this, 9535);
+        metrics.addCustomChart(new Metrics.SimplePie("PluginVersion", () -> getDescription().getVersion()));
+
+        new UpdateChecker(this, Executors.newSingleThreadExecutor(), 86303).getVersion(version ->  {
+            if(!version.equals(this.getDescription().getVersion()))
+                this.getLogger().info("There is a new version of FAC-AntiCrash (" + version + "). Please update your current version to avoid bugs and have the best security.");
+        });
 
         this.getCommand("unblockips").setExecutor(new UnblockIPsCommand());
         this.getCommand("anticrash").setExecutor(new AntiCrashCommand());
