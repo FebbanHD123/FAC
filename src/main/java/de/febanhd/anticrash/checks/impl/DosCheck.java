@@ -8,16 +8,15 @@ import de.febanhd.anticrash.checks.AbstractCheck;
 import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.nettyinjections.MCChannelInjection;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
+import de.febanhd.anticrash.utils.ActionbarUtil;
+import de.febanhd.anticrash.utils.NMSUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.buffer.UnpooledUnsafeDirectByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.server.v1_8_R3.ChatComponentText;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.net.InetSocketAddress;
@@ -93,8 +92,8 @@ public class DosCheck extends AbstractCheck {
             if (!this.isAttack && this.connectionPerSecond > this.cpsLimit) {
                 this.enableAttackMode(this.cpsLimit);
             }
-            String defaultDebugActionBarLayout = "&fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-IPs &c%ips%";
-            String defaultActionBarLayout = "&cAttack &f| &fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%";
+            String defaultDebugActionBarLayout = "&fCPS &7| &c%cps% &7| &fBlocked-IPs &c%ips%";
+            String defaultActionBarLayout = "&cAttack &f| &fCPS &7| &c%cps% &7| &fDuration &c%duration% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%";
             this.debugActionbarLayout = ChatColor.translateAlternateColorCodes('&',
                     ConfigCache.getInstance().getValue("doscheck.actionbarlayout.debug", defaultDebugActionBarLayout, String.class)
                     .replaceAll("%cps%", String.valueOf(this.connectionPerSecond))
@@ -104,14 +103,13 @@ public class DosCheck extends AbstractCheck {
                     ConfigCache.getInstance().getValue("doscheck.actionbarlayout.attack", defaultActionBarLayout, String.class)
                     .replaceAll("%cps%", String.valueOf(this.connectionPerSecond))
                     .replaceAll("%blocked%", String.valueOf(this.blockedConnections))
-                    .replaceAll("%ips%", String.valueOf(this.blockedIPs.size())));
+                    .replaceAll("%ips%", String.valueOf(this.blockedIPs.size()))
+                    .replaceAll("%duration%", ((System.currentTimeMillis() - this.attackStartedAt)/1000) + "s"));
 
             if (this.debug && !this.isAttack) {
                 Bukkit.getOnlinePlayers().forEach(player -> {
                     if(player.hasPermission("anticrash.notify")) {
-                        String message = this.debugActionbarLayout.replaceAll("%ping%", ((CraftPlayer) player).getHandle().ping + "ms");
-                        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte) 2);
-                        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+                        ActionbarUtil.sendActionbar(player, this.debugActionbarLayout);
                     }
                 });
             }
@@ -119,9 +117,7 @@ public class DosCheck extends AbstractCheck {
             if (this.isAttack) {
                 Bukkit.getOnlinePlayers().forEach(player -> {
                     if(player.hasPermission("anticrash.notify")) {
-                        String message = this.attackActionbarLayout.replaceAll("%ping%", ((CraftPlayer) player).getHandle().ping + "ms");
-                        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte) 2);
-                        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+                        ActionbarUtil.sendActionbar(player, this.attackActionbarLayout);
                     }
                 });
             }
@@ -164,9 +160,14 @@ public class DosCheck extends AbstractCheck {
                return false;
             }
 
+        try {
             if(this.isPlayerChannel(ctx.channel())) return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
-            if (o instanceof UnpooledUnsafeDirectByteBuf) {
+        if (o instanceof UnpooledUnsafeDirectByteBuf) {
                 ByteBuf byteBuf = Unpooled.wrappedBuffer((UnpooledUnsafeDirectByteBuf) o);
                 int capacity = byteBuf.capacity();
                 if (capacity > ConfigCache.getInstance().getValue("doscheck.maxDataCapacity", 1000, Integer.class)) {
@@ -177,9 +178,10 @@ public class DosCheck extends AbstractCheck {
             return true;
     }
 
-    private boolean isPlayerChannel(Channel channel) {
+    private boolean isPlayerChannel(Channel channel) throws Exception {
         for(Player player : Bukkit.getOnlinePlayers()) {
-            if(((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.equals(channel)) {
+            Object playerChannel = NMSUtils.getChannel(player);
+            if(playerChannel.equals(channel)) {
                 return true;
             }
         }
@@ -235,8 +237,7 @@ public class DosCheck extends AbstractCheck {
         }else if(!this.isAttack && !this.debug) {
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if(player.hasPermission("anticrash.notify")) {
-                    PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(AntiCrash.PREFIX + "§cBlocked IP: §7" + ip), (byte) 2);
-                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+                    ActionbarUtil.sendActionbar(player, AntiCrash.PREFIX + "§cBlocked IP: §7" + ip);
                 }
             });
         }

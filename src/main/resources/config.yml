@@ -57,10 +57,10 @@ doscheck:
   maxDataCapacity: 700
 
   #The action which is sending to players when attack
-  #Placeholders: %cps%: Connections per second, %ping%: The ping of the player, %blocked% The amount of blocked-connections, %ips%: The amount of blocked-ips
+  #Place-Holders: %cps%: Connections per second, %blocked% The amount of blocked-connections, %ips%: The amount of blocked-ips, %duration%: The duration of the attack
   actionbarlayout:
-    attack: '&cAttack &f| &fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%'
-    debug: '&fCPS &7| &c%cps% &7| &fPing &c%ping% &7| &fBlocked-IPs &c%ips%'
+    attack: '&cAttack &f| &fCPS &7| &c%cps% &7| &fDuration &c%duration% &7| &fBlocked-Connections &c%blocked% &7| &fBlocked-IPs &c%ips%'
+    debug: '&fCPS &7| &c%cps% &7| &fBlocked-IPs &c%ips%'
 
 placecheck:
 
