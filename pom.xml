@@ -6,7 +6,7 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>FAC</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 
     <repositories>
         <repository>
@@ -20,7 +20,8 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>F:/development/api/spigot/spigot_1.8_R3.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>

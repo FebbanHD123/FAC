@@ -1,5 +1,7 @@
 package de.febanhd.anticrash.checks.impl.nbt;
 
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import de.febanhd.anticrash.checks.CheckResult;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import de.febanhd.anticrash.utils.ExploitCheckUtils;
@@ -23,7 +25,7 @@ public class MapNBTCheck implements INBTCheck, Listener {
     }
 
     @Override
-    public CheckResult isValid(NBTTagCompound tag) {
+    public CheckResult isValid(NbtCompound tag) {
         return ExploitCheckUtils.isValidMap(tag);
     }
 
@@ -36,10 +38,10 @@ public class MapNBTCheck implements INBTCheck, Listener {
     public void onInteract(PlayerInteractEvent event) {
         ItemStack itemInHand = event.getItem();
         if (itemInHand == null || !itemInHand.getType().equals(Material.EMPTY_MAP)) return;
-        net.minecraft.server.v1_8_R3.ItemStack item = CraftItemStack.asNMSCopy(itemInHand);
         Bukkit.getScheduler().scheduleSyncDelayedTask(AntiCrashPlugin.getPlugin(), () -> {
             if (itemInHand.getType() == Material.MAP) {
-                if (!ExploitCheckUtils.isValidMap(item.getTag()).check()) {
+                NbtCompound tag = (NbtCompound) NbtFactory.fromItemTag(itemInHand);
+                if (!ExploitCheckUtils.isValidMap(tag).check()) {
                     itemInHand.setType(Material.AIR);
                 }
             }
