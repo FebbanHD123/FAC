@@ -13,9 +13,13 @@ public class InstantCrasherCheck extends AbstractCheck {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
-        Player player = event.getPlayer();
-        if(player.getAddress() == null) {
-            this.sendCrashWarning(player, event, "IP-Address is null. (InstantCrasher)");
+        try {
+            Player player = event.getPlayer();
+            if (player != null && player.getAddress() == null) {
+                this.sendCrashWarning(player, event, "IP-Address is null. (InstantCrasher)");
+            }
+        }catch (Exception e) {
+
         }
     }
 }

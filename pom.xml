@@ -6,7 +6,7 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>FAC</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6-Beta</version>
 
     <repositories>
         <repository>
