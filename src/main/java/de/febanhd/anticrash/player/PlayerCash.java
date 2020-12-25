@@ -12,7 +12,7 @@ public class PlayerCash {
     private ArrayList<FACPlayer> players = Lists.newArrayList();
 
     public void register(Player bukkitPlayer) {
-        FACPlayer player = new FACPlayer(System.currentTimeMillis(), (CraftPlayer) bukkitPlayer);
+        FACPlayer player = new FACPlayer(System.currentTimeMillis(), bukkitPlayer);
         this.players.add(player);
     }
 

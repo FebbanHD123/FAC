@@ -11,6 +11,7 @@ import de.febanhd.anticrash.utils.ExploitCheckUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
@@ -24,6 +25,7 @@ public class BookCheck extends AbstractCheck {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
+        if(!Bukkit.getServer().getVersion().contains("1.8")) return;
         Player player = event.getPlayer();
         if(!player.isOnline()) {
             event.setCancelled(true);
@@ -81,8 +83,10 @@ public class BookCheck extends AbstractCheck {
                         stack.setTag(tag);
                     }
 
-                    if (!ItemWrittenBook.b(stack.getTag())) {
+                    if (channel.equals("MC|BEdit") && !ItemBookAndQuill.b(stack.getTag())) {
                         this.sendCrashWarning(player, event, "Invalid book arguments");
+                    }else if(channel.equals("MC|BSign") && !ItemWrittenBook.b(stack.getTag())) {
+                        this.sendCrashWarning(player, event, "Invalid writtenbook arguments");
                     }
 
                     CheckResult result = ExploitCheckUtils.isInvalidBookTag(stack.getTag());

@@ -13,7 +13,6 @@ import de.febanhd.anticrash.player.FACPlayer;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -101,7 +100,7 @@ public class MoveCheck extends AbstractCheck implements Listener {
     }
 
     private boolean isOnline(Player player) {
-        return ((CraftPlayer)player).getHandle().playerConnection.networkManager.channel.isOpen();
+        return player.isOnline();
     }
 
     @EventHandler

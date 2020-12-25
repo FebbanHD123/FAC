@@ -6,6 +6,7 @@ import de.febanhd.anticrash.nettyinjections.PacketInjection;
 import de.febanhd.anticrash.packetlogger.PacketLogger;
 import lombok.Getter;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -20,22 +21,22 @@ public class FACPlayer {
 
     private PacketLogger packetLogger;
 
-    public FACPlayer(long joinedAt, CraftPlayer player) {
+    public FACPlayer(long joinedAt, Player player) {
         this.joinedAt = joinedAt;
         this.uuid = player.getUniqueId();
-        this.packetInjection = new PacketInjection(player);
-        this.nettyDecodeInjection = new NettyDecodeInjection(player);
-        this.packetLogger = new PacketLogger(player, this.packetInjection);
+//        this.packetInjection = new PacketInjection(player);
+//        this.nettyDecodeInjection = new NettyDecodeInjection(player);
+//        this.packetLogger = new PacketLogger(player, this.packetInjection);
 //        this.packetLogger.startLogging();
 
-        this.packetInjection.inject();
+//        this.packetInjection.inject();
 
         AntiCrash.getInstance().getChecks().forEach(check -> check.registerFACPlayer(this));
     }
 
     public void unregister() {
-        this.packetInjection.remove();
-        this.nettyDecodeInjection.unInject();
+//        this.packetInjection.remove();
+//        this.nettyDecodeInjection.unInject();
 //        this.packetLogger.stopLogging();
     }
 }
