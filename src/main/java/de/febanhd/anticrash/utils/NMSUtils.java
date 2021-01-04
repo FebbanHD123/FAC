@@ -1,5 +1,6 @@
 package de.febanhd.anticrash.utils;
 
+import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,12 +25,12 @@ public class NMSUtils {
         return con;
     }
 
-    public static Object getChannel(Player player) throws Exception {
+    public static Channel getChannel(Player player) throws Exception {
         Object playerConnection = getConnection(player);
         Field networkManageField = playerConnection.getClass().getField("networkManager");
         Object networkManager = networkManageField.get(playerConnection);
         Field channelField = networkManager.getClass().getField("channel");
         Object channel = channelField.get(networkManager);
-        return channel;
+        return (Channel) channel;
     }
 }

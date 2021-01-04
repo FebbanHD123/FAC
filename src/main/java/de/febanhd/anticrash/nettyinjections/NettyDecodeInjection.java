@@ -1,6 +1,7 @@
 package de.febanhd.anticrash.nettyinjections;
 
 import de.febanhd.anticrash.handler.ByteBufDecoderHandler;
+import de.febanhd.anticrash.utils.NMSUtils;
 import io.netty.channel.Channel;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -10,10 +11,14 @@ public class NettyDecodeInjection {
     private Channel channel;
     private Player player;
 
-    public NettyDecodeInjection(CraftPlayer player) {
-        this.channel = player.getHandle().playerConnection.networkManager.channel;
-        this.player = player;
-        this.inject();
+    public NettyDecodeInjection(Player player) {
+        try {
+            this.channel = NMSUtils.getChannel(player);
+            this.player = player;
+            this.inject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void inject() {

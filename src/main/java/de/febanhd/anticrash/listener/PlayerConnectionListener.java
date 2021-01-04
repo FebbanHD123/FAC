@@ -16,6 +16,6 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent event) {
-        AntiCrash.getInstance().getPlayerCash().remove(event.getPlayer().getUniqueId());
+        AntiCrash.getInstance().getPlayerCash().handleQuit(event.getPlayer().getUniqueId());
     }
 }

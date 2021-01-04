@@ -16,11 +16,14 @@ java.library.path: JAVAHOME/bin
 #All settings for the decoding of a packet. Its the first Check
 decode:
 
+  maxLength: 8000
+
   #The max bytebuf/packet size (default: 16500)
   maxCapacity: 16500
 
   customCapacity:
-    PacketPlayInCustomPayload: 32800
+    #For example if you need command blocks then set maxCapacity of PacketPlayInCustomPayload to 32800
+#    PacketPlayInCustomPayload: 32800
 
 bookcheck:
 
@@ -73,13 +76,7 @@ placecheck:
 movecheck:
 
   #The limit of blocks the player can move per tick (default: 75)
-  maxDistance: 75
-
-  #How often may the player run too fast until he is kicked (default: 5)
-  max_flags: 6
-  
-  #If the tps is under that value. The check is disabled until the tps is height. 
-  maxTps: 15
+  flagDistance: 5
 
 nbtcheck:
   spawner:

@@ -10,6 +10,7 @@ import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.player.FACPlayer;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
+import de.febanhd.anticrash.utils.NMSUtils;
 import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -53,7 +54,6 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
     public void sendCrashWarning(Player player, PacketEvent event, String reason) {
         event.setCancelled(true);
         PacketContainer packet = event.getPacket();
-        this.closeChannel(player);
         if(lastReasonsMap.containsKey(player) && lastReasonsMap.get(player).equals(reason)) return;
         lastReasonsMap.put(player, reason);
 
@@ -65,6 +65,7 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
         if(lastMessage.get(player) + 10 <= System.currentTimeMillis()) {
             lastMessage.put(player, System.currentTimeMillis());
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.getPlugin(), () -> {
+                player.kickPlayer("§cCrashing");
                 new Broadcast("anticrash.notify", players -> {
                     players.sendMessage(AntiCrash.PREFIX + "§c" + playerName + " §7tried to Crash the Server!");
                     players.sendMessage(AntiCrash.PREFIX + "§cReason: §7" + reason);
@@ -72,6 +73,7 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
                 });
             });
         }
+        this.closeChannel(player);
     }
 
     public void sendInvalidPacketWarning(Player player, PacketEvent event, String reason) {
@@ -109,12 +111,12 @@ public class AbstractCheck extends PacketAdapter implements ICheck {
     }
 
     public void closeChannel(Player player) {
-        if(player instanceof CraftPlayer) {
-            Channel channel = ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel;
-            if(channel.isOpen()) {
+        try {
+            Channel channel = NMSUtils.getChannel(player);
+            if (channel.isOpen()) {
                 channel.close();
             }
-        }
+        }catch (Exception e) {}
     }
 
     public void safeKick(Player player, String reason) {

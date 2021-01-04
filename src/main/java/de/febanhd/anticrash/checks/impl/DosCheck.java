@@ -7,6 +7,8 @@ import de.febanhd.anticrash.AntiCrash;
 import de.febanhd.anticrash.checks.AbstractCheck;
 import de.febanhd.anticrash.config.ConfigCache;
 import de.febanhd.anticrash.nettyinjections.MCChannelInjection;
+import de.febanhd.anticrash.player.FACPlayer;
+import de.febanhd.anticrash.player.PlayerCash;
 import de.febanhd.anticrash.plugin.AntiCrashPlugin;
 import de.febanhd.anticrash.utils.ActionbarUtil;
 import de.febanhd.anticrash.utils.NMSUtils;
@@ -221,6 +223,8 @@ public class DosCheck extends AbstractCheck {
     private long lastBlockMessageSend = 0;
 
     public void blockIP(String ip, String reason) {
+        FACPlayer facPlayer = AntiCrash.getInstance().getPlayerCash().getPlayerByIP(ip);
+        if(facPlayer != null && facPlayer.getLastOnlineAt() + 2000 > System.currentTimeMillis()) return;
         this.blockedIPs.put(ip, System.currentTimeMillis());
         if(!this.isAttack && (lastBlockMessageSend + 10000 < System.currentTimeMillis())) {
             lastBlockMessageSend = System.currentTimeMillis();

@@ -30,6 +30,7 @@ public class NBTTagCheck extends AbstractCheck {
         Player player = event.getPlayer();
         PacketContainer packet = event.getPacket();
         ItemStack stack = packet.getItemModifier().readSafely(0);
+        if(stack == null) return;
         Material itemType = stack.getType();
         if(itemType == Material.AIR) return;
         NbtCompound tag = (NbtCompound) NbtFactory.fromItemTag(stack);

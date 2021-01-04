@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import de.febanhd.anticrash.checks.AbstractCheck;
 import de.febanhd.anticrash.checks.CheckResult;
 import de.febanhd.anticrash.config.ConfigCache;
@@ -25,18 +26,18 @@ public class BookCheck extends AbstractCheck {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
-        if(!Bukkit.getServer().getVersion().contains("1.8")) return;
         Player player = event.getPlayer();
-        if(!player.isOnline()) {
-            event.setCancelled(true);
-            return;
-        }
         PacketContainer packet = event.getPacket();
         if(packet.getType().equals(PacketType.Play.Client.CUSTOM_PAYLOAD)) {
             StructureModifier<ByteBuf> byteBufModifier = event.getPacket().getSpecificModifier(ByteBuf.class);
             ByteBuf byteBuf = byteBufModifier.readSafely(0).copy();
 
             String channel = packet.getStrings().readSafely(0);
+
+            if(byteBuf.capacity() == 0) {
+                event.setCancelled(true);
+                return;
+            }
 
             if (channel == null || channel.isEmpty()) {
                 this.sendCrashWarning(player, event, "Empty channel");
@@ -55,13 +56,7 @@ public class BookCheck extends AbstractCheck {
                     return;
                 }
 
-                if(byteBuf.capacity() < 1) {
-                    event.setCancelled(true);
-                    return;
-                }
-
                 try {
-
                     ItemStack stack = null;
                     short short0 = byteBuf.readShort();
                     if (short0 >= 0) {
